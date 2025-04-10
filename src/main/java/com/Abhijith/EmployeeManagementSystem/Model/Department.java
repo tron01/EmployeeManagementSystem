@@ -18,8 +18,6 @@ public class Department {
     @JoinColumn(name = "head_id")
     private Employee departmentHead;
 
-    @OneToMany(mappedBy = "department" ,cascade = CascadeType.ALL)
-    private List<Employee> employees =new ArrayList<>();
 
     public long getId() {
         return id;
@@ -53,11 +51,5 @@ public class Department {
         this.departmentHead = departmentHead;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
 
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
 }

@@ -14,6 +14,7 @@ public class Employee {
     private String address;
     private String role;
     private LocalDate joinDate;
+    private LocalDate dateOfBirth;
     private Double yearlyBonusPercentage;
 
     @ManyToOne
@@ -94,5 +95,12 @@ public class Employee {
 
     public void setReportingManager(Employee reportingManager) {
         this.reportingManager = reportingManager;
+    }
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }
