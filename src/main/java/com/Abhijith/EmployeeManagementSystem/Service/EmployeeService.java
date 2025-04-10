@@ -1,5 +1,6 @@
 package com.Abhijith.EmployeeManagementSystem.Service;
 
+import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeDTO;
 import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeLookupDTO;
 import com.Abhijith.EmployeeManagementSystem.Model.Department;
 import com.Abhijith.EmployeeManagementSystem.Model.Employee;
@@ -10,6 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -47,10 +51,39 @@ public class EmployeeService {
         return employeeRepository.findAll(PageRequest.of(page, 20));
     }
 
-    public Page<EmployeeLookupDTO> getEmployeeLookups(int page) {
-        Page<Employee> employeePage = employeeRepository.findAll(PageRequest.of(page, 20));
-        return employeePage.map(emp -> new EmployeeLookupDTO(emp.getId(), emp.getName()));
+    public List<EmployeeLookupDTO> getEmployeeLookups() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream()
+                .map(emp -> new EmployeeLookupDTO(emp.getId(), emp.getName()))
+                .collect(Collectors.toList());
     }
+
+    public Page<EmployeeDTO> getAllEmployeesPaginated(int page) {
+        Page<Employee> employeesPage = employeeRepository.findAll(PageRequest.of(page, 10));
+        return employeesPage.map(this::toDTO);  // map each Employee to DTO
+    }
+
+    public EmployeeDTO toDTO(Employee employee) {
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setId(employee.getId());
+        dto.setName(employee.getName());
+        dto.setSalary(employee.getSalary());
+        dto.setAddress(employee.getAddress());
+        dto.setRole(employee.getRole());
+        dto.setJoinDate(employee.getJoinDate());
+        dto.setDateOfBirth(employee.getDateOfBirth());
+        dto.setYearlyBonusPercentage(employee.getYearlyBonusPercentage());
+
+        if (employee.getDepartment() != null)
+            dto.setDepartmentId(employee.getDepartment().getId());
+
+        if (employee.getReportingManager() != null)
+            dto.setReportingManagerId(employee.getReportingManager().getId());
+
+        return dto;
+    }
+
+
 
 }
 
