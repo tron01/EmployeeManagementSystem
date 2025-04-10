@@ -22,6 +22,7 @@ public class DepartmentService {
     public Department update(Department department , Long id) {
         Department department1 = departmentRepository.findById(id).orElseThrow();
         department1.setName(department.getName());
+        department1.setDepartmentHead(department.getDepartmentHead());
         return departmentRepository.save(department1);
     }
 
