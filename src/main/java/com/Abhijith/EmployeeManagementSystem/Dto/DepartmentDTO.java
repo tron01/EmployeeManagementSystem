@@ -1,23 +1,12 @@
 package com.Abhijith.EmployeeManagementSystem.Dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
-public class DepartmentWithEmployeesDTO {
+public class DepartmentDTO {
     private Long id;
     private String name;
     private LocalDate creationDate;
-    private List<EmployeeLookupDTO> employees;
     private Long departmentHeadId;
-
-    public DepartmentWithEmployeesDTO(Long id, String name, LocalDate creationDate, List<EmployeeLookupDTO> employees, Long departmentHeadId) {
-        this.id = id;
-        this.name = name;
-        this.creationDate = creationDate;
-        this.employees = employees;
-        this.departmentHeadId = departmentHeadId;
-    }
-
 
     public Long getId() {
         return id;
@@ -41,14 +30,6 @@ public class DepartmentWithEmployeesDTO {
 
     public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public List<EmployeeLookupDTO> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<EmployeeLookupDTO> employees) {
-        this.employees = employees;
     }
 
     public Long getDepartmentHeadId() {
