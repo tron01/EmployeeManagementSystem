@@ -32,6 +32,7 @@ public class DepartmentController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
+
     // PUT /department/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Department department) {
@@ -45,6 +46,7 @@ public class DepartmentController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
+
     // GET /department or /department?page={page}
     @GetMapping
     public ResponseEntity<?> getAllDepartments(@RequestParam(defaultValue = "0") int page) {
@@ -59,6 +61,7 @@ public class DepartmentController {
            return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
        }
     }
+
     // GET /department/{id}  or /department/{id}?expand=employee
     @GetMapping("/{id}")
     public ResponseEntity<?> getDepartmentById(@PathVariable Long id, @RequestParam(name = "expand", required = false) String expandParam) {
@@ -74,13 +77,14 @@ public class DepartmentController {
             return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
         }
     }
+    
     // DELETE /department/{id}
     @DeleteMapping("/{id}")
         public ResponseEntity<?> deleteDepartment(@PathVariable Long id) {
         try {
             departmentService.delete(id);
             //return ResponseEntity.noContent().build();  // to sent 204 code
-            return ResponseEntity.ok("Department deleted successfully.");
+            return ResponseEntity.ok(Map.of("message", "Department deleted successfully."));
         }catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
         }
