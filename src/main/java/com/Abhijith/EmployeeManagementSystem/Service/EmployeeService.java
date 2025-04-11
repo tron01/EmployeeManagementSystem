@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,45 +24,90 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
     }
+    //add new emp
+    public EmployeeDTO create(EmployeeDTO dto) {
+        Employee employee = new Employee();
 
-    public Employee create(Employee employee) {
-        return employeeRepository.save(employee);
-    }
-    public Employee update(Long id,Employee employee) {
-        Employee existingEmployee = employeeRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id));
-        existingEmployee.setName(employee.getName());
-        existingEmployee.setAddress(employee.getAddress());
-        existingEmployee.setDateOfBirth(employee.getDateOfBirth());
-        existingEmployee.setSalary(employee.getSalary());
-        existingEmployee.setYearlyBonusPercentage(employee.getYearlyBonusPercentage());
-        existingEmployee.setRole(employee.getRole());
-        existingEmployee.setReportingManager(employee.getReportingManager());
-        return employeeRepository.save(existingEmployee);
-    }
-    public Employee changeDepartment(Long departmentId,Employee employee) {
-        Employee employee1 = employeeRepository.findById(employee.getId()).orElseThrow();
-        Department department = departmentRepository.findById(departmentId).orElseThrow();
-        employee1.setDepartment(department);
-        return employeeRepository.save(employee);
+        employee.setName(dto.getName());
+        employee.setAddress(dto.getAddress());
+        employee.setDateOfBirth(dto.getDateOfBirth());
+        employee.setJoinDate(dto.getJoinDate());
+        employee.setSalary(dto.getSalary());
+        employee.setYearlyBonusPercentage(dto.getYearlyBonusPercentage());
+        employee.setRole(dto.getRole());
+
+        // Set Department if provided
+        if (dto.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(dto.getDepartmentId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + dto.getDepartmentId()));
+            employee.setDepartment(department);
+        }
+
+        // Set Reporting Manager if provided
+        if (dto.getReportingManagerId() != null) {
+            Employee manager = employeeRepository.findById(dto.getReportingManagerId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reporting manager not found with id " + dto.getReportingManagerId()));
+            employee.setReportingManager(manager);
+        }
+
+        Employee saved = employeeRepository.save(employee);
+        return this.toDTO(saved);
     }
 
-    public Page<Employee> getAll(int page) {
-        return employeeRepository.findAll(PageRequest.of(page, 20));
+    //get Emp by id
+    public EmployeeDTO getById(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id)
+                );
+        return this.toDTO(employee);
+    }
+    //delete by id
+    public void deleteById(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id)
+                );
+        employeeRepository.delete(employee);
     }
 
+    //update Employee Basic info.
+    public EmployeeDTO update(Long id,EmployeeDTO dto) {
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id));
+        // Basic field updates
+        existingEmployee.setName(dto.getName());
+        existingEmployee.setAddress(dto.getAddress());
+        existingEmployee.setDateOfBirth(dto.getDateOfBirth());
+
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+        return toDTO(updatedEmployee);
+    }
+    //Change Department
+    public EmployeeDTO changeDepartment(Long employeeID,Long departmentId) {
+       Employee employee = employeeRepository.findById(employeeID).
+               orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + employeeID));
+       Department department = departmentRepository.findById(departmentId).
+               orElseThrow(() -> new  ResponseStatusException(HttpStatus.NOT_FOUND, "Department  not found with id " + departmentId));
+       employee.setDepartment(department);
+       Employee updatedEmployee = employeeRepository.save(employee);
+        return toDTO(updatedEmployee);
+    }
+    //Employee List with id:name
     public List<EmployeeLookupDTO> getEmployeeLookups() {
         List<Employee> employees = employeeRepository.findAll();
         return employees.stream()
                 .map(emp -> new EmployeeLookupDTO(emp.getId(), emp.getName()))
                 .collect(Collectors.toList());
     }
-
+    //get Employee List
     public Page<EmployeeDTO> getAllEmployeesPaginated(int page) {
-        Page<Employee> employeesPage = employeeRepository.findAll(PageRequest.of(page, 10));
+        Page<Employee> employeesPage = employeeRepository.findAll(PageRequest.of(page, 20));
         return employeesPage.map(this::toDTO);  // map each Employee to DTO
     }
-
+    // Employee DTO mapper
     public EmployeeDTO toDTO(Employee employee) {
+        if (employee == null) return null;
         EmployeeDTO dto = new EmployeeDTO();
         dto.setId(employee.getId());
         dto.setName(employee.getName());
