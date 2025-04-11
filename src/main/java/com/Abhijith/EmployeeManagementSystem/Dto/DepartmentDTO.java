@@ -1,12 +1,33 @@
 package com.Abhijith.EmployeeManagementSystem.Dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDate;
+import java.util.List;
 
 public class DepartmentDTO {
     private Long id;
     private String name;
     private LocalDate creationDate;
     private Long departmentHeadId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<EmployeeDTO> employees;
+    private Integer employeeCount;
+    public Integer getEmployeeCount() {
+        return employeeCount;
+    }
+
+    public void setEmployeeCount(Integer employeeCount) {
+        this.employeeCount = employeeCount;
+    }
+
+
+    public List<EmployeeDTO> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<EmployeeDTO> employees) {
+        this.employees = employees;
+    }
 
     public Long getId() {
         return id;
