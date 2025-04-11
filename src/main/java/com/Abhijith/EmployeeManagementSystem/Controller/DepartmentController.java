@@ -47,13 +47,17 @@ public class DepartmentController {
     }
     // GET /department or /department?page={page}
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllDepartments(@RequestParam(defaultValue = "0") int page) {
-        Page<DepartmentDTO> departmentPage = departmentService.getAll(page);
-        Map<String, Object> response = new HashMap<>();
-        response.put("departments", departmentPage.getContent());
-        response.put("currentPage", departmentPage.getNumber());
-        response.put("totalPages", departmentPage.getTotalPages());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> getAllDepartments(@RequestParam(defaultValue = "0") int page) {
+       try {
+           Page<DepartmentDTO> departmentPage = departmentService.getAll(page);
+           Map<String, Object> response = new HashMap<>();
+           response.put("departments", departmentPage.getContent());
+           response.put("currentPage", departmentPage.getNumber());
+           response.put("totalPages", departmentPage.getTotalPages());
+           return ResponseEntity.ok(response);
+       }catch (ResponseStatusException e) {
+           return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
+       }
     }
     // GET /department/{id}  or /department/{id}?expand=employee
     @GetMapping("/{id}")
@@ -80,11 +84,6 @@ public class DepartmentController {
         }catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
         }
-
-
     }
-
-
-
 }
 

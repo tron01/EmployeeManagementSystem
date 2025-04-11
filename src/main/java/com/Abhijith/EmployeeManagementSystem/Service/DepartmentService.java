@@ -48,8 +48,12 @@ public class DepartmentService {
     }
     //get department List
     public Page<DepartmentDTO> getAll(int page) {
-        return departmentRepository.findAll(PageRequest.of(page, 20))
-                .map(this::toDTO);
+        Page<Department> departmentPage = departmentRepository.findAll(PageRequest.of(page, 20));
+        // Handle page not found case
+        if (page >= departmentPage.getTotalPages() && departmentPage.getTotalPages() > 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Page not found");
+        }
+        return departmentPage.map(this::toDTO);
     }
 
     //get departmentInfoById (when expand=true -> shows employee list of that department)
@@ -86,6 +90,7 @@ public class DepartmentService {
         dto.setId(dept.getId());
         dto.setName(dept.getName());
         dto.setCreationDate(dept.getCreationDate());
+        dto.setEmployeeCount(dept.getEmployees().size());
         if (dept.getDepartmentHead() != null)
             dto.setDepartmentHeadId(dept.getDepartmentHead().getId());
         return dto;
