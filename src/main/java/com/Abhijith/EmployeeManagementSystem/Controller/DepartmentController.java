@@ -21,7 +21,7 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    // Create new department
+    // POST /department
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Department department) {
         try {
@@ -32,7 +32,6 @@ public class DepartmentController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
-
     // PUT /department/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Department department) {
@@ -46,8 +45,7 @@ public class DepartmentController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
-
-    // GET /department?page={page}
+    // GET /department or /department?page={page}
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllDepartments(@RequestParam(defaultValue = "0") int page) {
         Page<DepartmentDTO> departmentPage = departmentService.getAll(page);
@@ -57,19 +55,35 @@ public class DepartmentController {
         response.put("totalPages", departmentPage.getTotalPages());
         return ResponseEntity.ok(response);
     }
-
-
+    // GET /department/{id}  or /department/{id}?expand=employee
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentDTO> getDepartmentById(@PathVariable Long id, @RequestParam(name = "expand", required = false) String expandParam) {
-        boolean expandEmployees = "employee".equalsIgnoreCase(expandParam);
-        if(expandEmployees) {
-            DepartmentDTO dto = departmentService.getDepartmentWithEmployee(id, expandEmployees);
+    public ResponseEntity<?> getDepartmentById(@PathVariable Long id, @RequestParam(name = "expand", required = false) String expandParam) {
+        try {
+            boolean expandEmployees = "employee".equalsIgnoreCase(expandParam);
+            if(expandEmployees) {
+                DepartmentDTO dto = departmentService.getDepartmentWithEmployee(id, expandEmployees);
+                return ResponseEntity.ok(dto);
+            }
+            DepartmentDTO dto = departmentService.getDepartmentWithEmployee(id,expandEmployees);
             return ResponseEntity.ok(dto);
+        }catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
         }
-        DepartmentDTO dto = departmentService.getDepartmentWithEmployee(id,expandEmployees);
-        return ResponseEntity.ok(dto);
+    }
+    // DELETE /department/{id}
+    @DeleteMapping("/{id}")
+        public ResponseEntity<?> deleteDepartment(@PathVariable Long id) {
+        try {
+            departmentService.delete(id);
+            //return ResponseEntity.noContent().build();  // to sent 204 code
+            return ResponseEntity.ok("Department deleted successfully.");
+        }catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
+        }
+
 
     }
+
 
 
 }
