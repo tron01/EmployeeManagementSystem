@@ -94,12 +94,17 @@ public class EmployeeService {
         return toDTO(updatedEmployee);
     }
     //Employee List with id:name
-    public List<EmployeeLookupDTO> getEmployeeLookups() {
-        List<Employee> employees = employeeRepository.findAll();
-        return employees.stream()
-                .map(emp -> new EmployeeLookupDTO(emp.getId(), emp.getName()))
-                .collect(Collectors.toList());
+    public Page<EmployeeLookupDTO> getEmployeeLookups(int page) {
+
+        Page<Employee> employeePage = employeeRepository.findAll(PageRequest.of(page, 20));
+        return employeePage.map(emp -> {
+            EmployeeLookupDTO dto = new EmployeeLookupDTO();
+            dto.setId(emp.getId());
+            dto.setName(emp.getName());
+            return dto;
+        });
     }
+
     //get Employee List
     public Page<EmployeeDTO> getAllEmployeesPaginated(int page) {
         Page<Employee> employeesPage = employeeRepository.findAll(PageRequest.of(page, 20));

@@ -42,22 +42,19 @@ public class EmployeeController {
     }
     //list of All Emp
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllEmployees(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) Boolean lookup) {
-
-        if (Boolean.TRUE.equals(lookup)) {
-            List<EmployeeLookupDTO> lookupList = employeeService.getEmployeeLookups();
-            return ResponseEntity.ok(Map.of("employees", lookupList));
-        }
-
-        Page<EmployeeDTO> employeePage = employeeService.getAllEmployeesPaginated(page);
-
+    public ResponseEntity<Map<String, Object>> getAllEmployees(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) Boolean lookup) {
         Map<String, Object> response = new HashMap<>();
+        if (Boolean.TRUE.equals(lookup)) {
+            Page<EmployeeLookupDTO> lookupPage = employeeService.getEmployeeLookups(page);
+            response.put("employees", lookupPage.getContent());
+            response.put("currentPage", lookupPage.getNumber());
+            response.put("totalPages", lookupPage.getTotalPages());
+            return ResponseEntity.ok(response);
+        }
+        Page<EmployeeDTO> employeePage = employeeService.getAllEmployeesPaginated(page);
         response.put("employees", employeePage.getContent());
         response.put("currentPage", employeePage.getNumber());
         response.put("totalPages", employeePage.getTotalPages());
-
         return ResponseEntity.ok(response);
     }
     //get by id
