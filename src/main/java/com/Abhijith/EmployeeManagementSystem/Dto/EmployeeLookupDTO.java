@@ -4,10 +4,7 @@ public class EmployeeLookupDTO {
     private Long id;
     private String name;
 
-    public EmployeeLookupDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+
 
     public Long getId() {
         return id;
