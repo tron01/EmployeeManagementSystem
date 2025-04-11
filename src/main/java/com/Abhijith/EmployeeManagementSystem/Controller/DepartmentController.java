@@ -12,9 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/departments")
+@RequestMapping("/department")
 public class DepartmentController {
-
 
     private final DepartmentService departmentService;
 
@@ -34,7 +33,7 @@ public class DepartmentController {
         }
     }
 
-    // PUT /departments/{id}
+    // PUT /department/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Department department) {
         try {
@@ -47,18 +46,29 @@ public class DepartmentController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
-    
-    // GET /departments?page={page}
+
+    // GET /department?page={page}
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllDepartments(@RequestParam(defaultValue = "0") int page) {
         Page<DepartmentDTO> departmentPage = departmentService.getAll(page);
-
         Map<String, Object> response = new HashMap<>();
         response.put("departments", departmentPage.getContent());
         response.put("currentPage", departmentPage.getNumber());
         response.put("totalPages", departmentPage.getTotalPages());
-
         return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DepartmentDTO> getDepartmentById(@PathVariable Long id, @RequestParam(name = "expand", required = false) String expandParam) {
+        boolean expandEmployees = "employee".equalsIgnoreCase(expandParam);
+        if(expandEmployees) {
+            DepartmentDTO dto = departmentService.getDepartmentWithEmployee(id, expandEmployees);
+            return ResponseEntity.ok(dto);
+        }
+        DepartmentDTO dto = departmentService.getDepartmentWithEmployee(id,expandEmployees);
+        return ResponseEntity.ok(dto);
+
     }
 
 
