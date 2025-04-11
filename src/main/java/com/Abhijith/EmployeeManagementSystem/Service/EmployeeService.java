@@ -11,8 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -24,7 +22,7 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
     }
-    //add new emp
+    //Add new Employee
     public EmployeeDTO create(EmployeeDTO dto) {
         Employee employee = new Employee();
 
@@ -54,7 +52,7 @@ public class EmployeeService {
         return this.toDTO(saved);
     }
 
-    //get Emp by id
+    //Get Employee by Id
     public EmployeeDTO getById(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
@@ -62,7 +60,7 @@ public class EmployeeService {
                 );
         return this.toDTO(employee);
     }
-    //delete by id
+    //Delete by Id
     public void deleteById(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
@@ -73,16 +71,26 @@ public class EmployeeService {
 
     //update Employee Basic info.
     public EmployeeDTO update(Long id,EmployeeDTO dto) {
+
+        // Validate that the path ID matches the DTO ID
+        if (dto.getId() != null && !dto.getId().equals(id))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and DTO ID");
+
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id));
         // Basic field updates
         existingEmployee.setName(dto.getName());
         existingEmployee.setAddress(dto.getAddress());
+        existingEmployee.setRole(dto.getRole());
         existingEmployee.setDateOfBirth(dto.getDateOfBirth());
+        existingEmployee.setJoinDate(dto.getJoinDate());
+        existingEmployee.setSalary(dto.getSalary());
+        existingEmployee.setYearlyBonusPercentage(dto.getYearlyBonusPercentage());
 
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
         return toDTO(updatedEmployee);
     }
+
     //Change Department
     public EmployeeDTO changeDepartment(Long employeeID,Long departmentId) {
        Employee employee = employeeRepository.findById(employeeID).
@@ -93,9 +101,9 @@ public class EmployeeService {
        Employee updatedEmployee = employeeRepository.save(employee);
         return toDTO(updatedEmployee);
     }
+
     //Employee List with id:name
     public Page<EmployeeLookupDTO> getEmployeeLookups(int page) {
-
         Page<Employee> employeePage = employeeRepository.findAll(PageRequest.of(page, 20));
         return employeePage.map(emp -> {
             EmployeeLookupDTO dto = new EmployeeLookupDTO();
@@ -110,6 +118,7 @@ public class EmployeeService {
         Page<Employee> employeesPage = employeeRepository.findAll(PageRequest.of(page, 20));
         return employeesPage.map(this::toDTO);  // map each Employee to DTO
     }
+
     // Employee DTO mapper
     public EmployeeDTO toDTO(Employee employee) {
         if (employee == null) return null;
@@ -131,9 +140,6 @@ public class EmployeeService {
 
         return dto;
     }
-
-
-
 }
 
 
