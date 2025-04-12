@@ -74,13 +74,13 @@ public class EmployeeService {
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id));
         //  field updates(name,address,role,dob,joinDate,Salary,Bonus%)
-        existingEmployee.setName(dto.getName());
-        existingEmployee.setAddress(dto.getAddress());
-        existingEmployee.setRole(dto.getRole());
-        existingEmployee.setDateOfBirth(dto.getDateOfBirth());
-        existingEmployee.setJoinDate(dto.getJoinDate());
-        existingEmployee.setSalary(dto.getSalary());
-        existingEmployee.setYearlyBonusPercentage(dto.getYearlyBonusPercentage());
+        if (dto.getName() != null) existingEmployee.setName(dto.getName());
+        if (dto.getAddress() != null) existingEmployee.setAddress(dto.getAddress());
+        if (dto.getRole() != null) existingEmployee.setRole(dto.getRole());
+        if (dto.getDateOfBirth() != null) existingEmployee.setDateOfBirth(dto.getDateOfBirth());
+        if (dto.getJoinDate() != null) existingEmployee.setJoinDate(dto.getJoinDate());
+        if (dto.getSalary() != null) existingEmployee.setSalary(dto.getSalary());
+        if (dto.getYearlyBonusPercentage() != null) existingEmployee.setYearlyBonusPercentage(dto.getYearlyBonusPercentage());
 
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
         return toDTO(updatedEmployee);

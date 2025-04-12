@@ -50,9 +50,9 @@ public class DepartmentService {
         Department existing = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + id));
         //fields (name,CreationDate,DepartmentHeadId )
-        existing.setName(dto.getName());
-        existing.setCreationDate(dto.getCreationDate());
-        // Optionally set DepartmentHead from ID
+        if (dto.getName() != null) existing.setName(dto.getName());
+        if (dto.getCreationDate() != null) existing.setCreationDate(dto.getCreationDate());
+        //  set DepartmentHead
         if (dto.getDepartmentHeadId() != null) {
             Employee head = employeeRepository.findById(dto.getDepartmentHeadId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department head not found with id " + dto.getDepartmentHeadId()));
