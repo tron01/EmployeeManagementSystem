@@ -101,6 +101,9 @@ public class EmployeeService {
     //Employee List with id:name
     public Page<EmployeeLookupDTO> getEmployeeLookups(int page) {
         Page<Employee> employeePage = employeeRepository.findAll(PageRequest.of(page, 20));
+        if (page >= employeePage.getTotalPages() && employeePage.getTotalPages() > 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Page not found");
+        }
         return employeePage.map(emp -> {
             EmployeeLookupDTO dto = new EmployeeLookupDTO();
             dto.setId(emp.getId());
@@ -112,6 +115,9 @@ public class EmployeeService {
     //get Employee List
     public Page<EmployeeDTO> getAllEmployeesPaginated(int page) {
         Page<Employee> employeesPage = employeeRepository.findAll(PageRequest.of(page, 20));
+        if (page >= employeesPage.getTotalPages() && employeesPage.getTotalPages() > 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Page not found");
+        }
         return employeesPage.map(employee -> this.toDTO(employee));  // map each Employee to DTO
     }
 

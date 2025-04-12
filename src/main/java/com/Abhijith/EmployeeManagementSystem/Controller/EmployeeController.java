@@ -39,22 +39,30 @@ public class EmployeeController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
-    //GET /employee or /employee?lookup=true
+    //GET /employee or /employee?lookup=true or /employee?lookup=true&page={num}
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllEmployees(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) Boolean lookup) {
-        Map<String, Object> response = new HashMap<>();
-        if (Boolean.TRUE.equals(lookup)) {
-            Page<EmployeeLookupDTO> lookupPage = employeeService.getEmployeeLookups(page);
-            response.put("employees", lookupPage.getContent());
-            response.put("currentPage", lookupPage.getNumber());
-            response.put("totalPages", lookupPage.getTotalPages());
+    public ResponseEntity<?> getAllEmployees(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) Boolean lookup) {
+
+        try {
+            Map<String, Object> response = new HashMap<>();
+            if (Boolean.TRUE.equals(lookup)) {
+                Page<EmployeeLookupDTO> lookupPage = employeeService.getEmployeeLookups(page);
+                response.put("employees", lookupPage.getContent());
+                response.put("currentPage", lookupPage.getNumber());
+                response.put("totalPages", lookupPage.getTotalPages());
+                return ResponseEntity.ok(response);
+            }
+            Page<EmployeeDTO> employeePage = employeeService.getAllEmployeesPaginated(page);
+            response.put("employees", employeePage.getContent());
+            response.put("currentPage", employeePage.getNumber());
+            response.put("totalPages", employeePage.getTotalPages());
             return ResponseEntity.ok(response);
+        }catch (ResponseStatusException e) {
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(Map.of("error", e.getReason()));
         }
-        Page<EmployeeDTO> employeePage = employeeService.getAllEmployeesPaginated(page);
-        response.put("employees", employeePage.getContent());
-        response.put("currentPage", employeePage.getNumber());
-        response.put("totalPages", employeePage.getTotalPages());
-        return ResponseEntity.ok(response);
+
     }
     //GET /employee/{id}
     @GetMapping("/{id}")
