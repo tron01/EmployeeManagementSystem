@@ -39,7 +39,7 @@ public class EmployeeController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
-    //GET /employee
+    //GET /employee or /employee?lookup=true
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllEmployees(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) Boolean lookup) {
         Map<String, Object> response = new HashMap<>();

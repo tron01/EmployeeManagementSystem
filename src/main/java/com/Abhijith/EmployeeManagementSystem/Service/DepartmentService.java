@@ -49,6 +49,7 @@ public class DepartmentService {
     public DepartmentDTO update(DepartmentDTO  dto , Long id) {
         Department existing = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + id));
+        //fields (name,CreationDate,DepartmentHeadId )
         existing.setName(dto.getName());
         existing.setCreationDate(dto.getCreationDate());
         // Optionally set DepartmentHead from ID
@@ -63,16 +64,7 @@ public class DepartmentService {
         Department saved = departmentRepository.save(existing);
         return toDTO(saved);
     }
-    //delete department
-    public void delete(Long id) {
-        Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + id));
 
-        if (department.getEmployees() != null && !department.getEmployees().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete department with assigned employees");
-        }
-        departmentRepository.deleteById(id);
-    }
     //get department List
     public Page<DepartmentDTO> getAll(int page) {
         Page<Department> departmentPage = departmentRepository.findAll(PageRequest.of(page, 20));
@@ -83,7 +75,7 @@ public class DepartmentService {
         return departmentPage.map(this::toDTO);
     }
 
-    //get departmentInfoById (when expand=true -> shows employee list of that department)
+    //get departmentInfoById (when expandEmployees=true -> shows departmentLis + employeeList of that department)
     public DepartmentDTO getDepartmentWithEmployee(Long id, boolean expandEmployees) {
         Department dept = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + id));
@@ -99,7 +91,7 @@ public class DepartmentService {
         if (expandEmployees) {
             List<EmployeeDTO> employeeDTOs = dept.getEmployees()
                     .stream()
-                    .map(this::convertToDTO)
+                    .map(employee -> this.convertToDTO(employee))
                     .collect(Collectors.toList());
 
             dto.setEmployees(employeeDTOs);
@@ -110,7 +102,18 @@ public class DepartmentService {
         return dto;
     }
 
-    //DepartmentDTO mapping (add,update,departmentList)
+    //delete department
+    public void delete(Long id) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + id));
+        //Checking department contain EmployeesList and it has at least one employee
+        if (department.getEmployees() != null && !department.getEmployees().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete department with assigned employees");
+        }
+        departmentRepository.deleteById(id);
+    }
+
+    //DepartmentDTO mapping (create,update,departmentList)
     private DepartmentDTO toDTO(Department dept) {
         DepartmentDTO dto = new DepartmentDTO();
         dto.setId(dept.getId());
@@ -121,7 +124,8 @@ public class DepartmentService {
             dto.setDepartmentHeadId(dept.getDepartmentHead().getId());
         return dto;
     }
-    //EmployeeDTO mapping (getDepartmentWithEmployee)
+
+    //EmployeeDTO mapping for (getDepartmentWithEmployee)
     private EmployeeDTO convertToDTO(Employee employee) {
         EmployeeDTO dto = new EmployeeDTO();
         dto.setId(employee.getId());
@@ -136,6 +140,5 @@ public class DepartmentService {
         dto.setReportingManagerId(employee.getReportingManager() != null ? employee.getReportingManager().getId() : null);
         return dto;
     }
-
 
 }
