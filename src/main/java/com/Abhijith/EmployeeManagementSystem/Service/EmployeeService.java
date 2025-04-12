@@ -25,7 +25,6 @@ public class EmployeeService {
     //Add new Employee
     public EmployeeDTO create(EmployeeDTO dto) {
         Employee employee = new Employee();
-
         employee.setName(dto.getName());
         employee.setAddress(dto.getAddress());
         employee.setDateOfBirth(dto.getDateOfBirth());
@@ -69,18 +68,12 @@ public class EmployeeService {
         employeeRepository.delete(employee);
     }
 
-    //update Employee Basic info.
+    //Update Employee Basic info.
     public EmployeeDTO update(Long id,EmployeeDTO dto) {
 
-        // Validate that the path ID matches the DTO ID
-        if (dto.getId() != null && !dto.getId().equals(id))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and ResponseBody ID");
-        if (dto.getId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payload must include an ID");
-        }
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id));
-        // Basic field updates
+        //  field updates(name,address,role,dob,joinDate,Salary,Bonus%)
         existingEmployee.setName(dto.getName());
         existingEmployee.setAddress(dto.getAddress());
         existingEmployee.setRole(dto.getRole());
@@ -93,12 +86,13 @@ public class EmployeeService {
         return toDTO(updatedEmployee);
     }
 
-    //Change Department
+    //Change Employee Department
     public EmployeeDTO changeDepartment(Long employeeID,Long departmentId) {
        Employee employee = employeeRepository.findById(employeeID).
                orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + employeeID));
        Department department = departmentRepository.findById(departmentId).
                orElseThrow(() -> new  ResponseStatusException(HttpStatus.NOT_FOUND, "Department  not found with id " + departmentId));
+       //  field updates (departmentId)
        employee.setDepartment(department);
        Employee updatedEmployee = employeeRepository.save(employee);
         return toDTO(updatedEmployee);
@@ -118,7 +112,7 @@ public class EmployeeService {
     //get Employee List
     public Page<EmployeeDTO> getAllEmployeesPaginated(int page) {
         Page<Employee> employeesPage = employeeRepository.findAll(PageRequest.of(page, 20));
-        return employeesPage.map(this::toDTO);  // map each Employee to DTO
+        return employeesPage.map(employee -> this.toDTO(employee));  // map each Employee to DTO
     }
 
     // Employee DTO mapper

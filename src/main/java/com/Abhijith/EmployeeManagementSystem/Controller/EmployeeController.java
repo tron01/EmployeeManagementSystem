@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,7 +23,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    //Add new emp
+    //POST /employee
     @PostMapping
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeDTO dto) {
         try {
@@ -40,7 +39,7 @@ public class EmployeeController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
-    //list of All Emp
+    //GET /employee
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllEmployees(@RequestParam(defaultValue = "0") int page, @RequestParam(required = false) Boolean lookup) {
         Map<String, Object> response = new HashMap<>();
@@ -57,7 +56,7 @@ public class EmployeeController {
         response.put("totalPages", employeePage.getTotalPages());
         return ResponseEntity.ok(response);
     }
-    //get by id
+    //GET /employee/{id}
     @GetMapping("/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable Long id) {
         try {
@@ -74,7 +73,7 @@ public class EmployeeController {
         }
     }
 
-    //Delete By id
+    //DELETE /employee/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEmployeeById(@PathVariable Long id) {
         try {
@@ -92,7 +91,7 @@ public class EmployeeController {
     }
 
 
-    //Update Basic Info
+    //PUT /employee/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO dto) {
         try {
@@ -109,7 +108,7 @@ public class EmployeeController {
         }
     }
 
-    //Change Department
+    //PUT /employee/{id}/department
     @PutMapping("/{id}/department")
     public ResponseEntity<?> changeDepartment(@PathVariable("id") Long employeeId,@RequestBody ChangeDepartmentDTO request) {
         try {
