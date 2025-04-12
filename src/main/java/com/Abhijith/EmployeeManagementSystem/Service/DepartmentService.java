@@ -87,16 +87,15 @@ public class DepartmentService {
     public DepartmentDTO getDepartmentWithEmployee(Long id, boolean expandEmployees) {
         Department dept = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + id));
-
+        //show Department only info
         DepartmentDTO dto = new DepartmentDTO();
         dto.setId(dept.getId());
         dto.setName(dept.getName());
         dto.setCreationDate(dept.getCreationDate());
-
         dto.setDepartmentHeadId(
                 dept.getDepartmentHead() != null ? dept.getDepartmentHead().getId() : null
         );
-
+        //expand=true
         if (expandEmployees) {
             List<EmployeeDTO> employeeDTOs = dept.getEmployees()
                     .stream()
