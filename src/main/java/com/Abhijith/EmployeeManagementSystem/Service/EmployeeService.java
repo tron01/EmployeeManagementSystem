@@ -74,8 +74,10 @@ public class EmployeeService {
 
         // Validate that the path ID matches the DTO ID
         if (dto.getId() != null && !dto.getId().equals(id))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and DTO ID");
-
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mismatch between path ID and ResponseBody ID");
+        if (dto.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payload must include an ID");
+        }
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + id));
         // Basic field updates
