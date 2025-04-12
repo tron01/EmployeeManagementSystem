@@ -5,6 +5,7 @@ import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeDTO;
 import com.Abhijith.EmployeeManagementSystem.Model.Department;
 import com.Abhijith.EmployeeManagementSystem.Model.Employee;
 import com.Abhijith.EmployeeManagementSystem.Repository.DepartmentRepository;
+import com.Abhijith.EmployeeManagementSystem.Repository.EmployeeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -18,23 +19,49 @@ import java.util.stream.Collectors;
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public DepartmentService(DepartmentRepository departmentRepository) {
+    public DepartmentService(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository) {
         this.departmentRepository = departmentRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     //add department
-    public DepartmentDTO create(Department department) {
+    public DepartmentDTO create(DepartmentDTO dto) {
+        Department department = new Department();
+        department.setName(dto.getName());
+        department.setCreationDate(dto.getCreationDate());
+
+        // Optionally set DepartmentHead from ID
+        if (dto.getDepartmentHeadId() != null) {
+            Employee head = employeeRepository.findById(dto.getDepartmentHeadId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Department head not found with id " + dto.getDepartmentHeadId()));
+            department.setDepartmentHead(head);
+        }else{
+            department.setDepartmentHead(null);
+        }
+
         Department saved = departmentRepository.save(department);
         return toDTO(saved);
     }
     //update department
-    public DepartmentDTO update(Department department , Long id) {
+    public DepartmentDTO update(DepartmentDTO  dto , Long id) {
         Department existing = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found with id " + id));
-        existing.setName(department.getName());
-        existing.setDepartmentHead(department.getDepartmentHead());
-        return toDTO(departmentRepository.save(existing));
+        existing.setName(dto.getName());
+        existing.setCreationDate(dto.getCreationDate());
+        // Optionally set DepartmentHead from ID
+        if (dto.getDepartmentHeadId() != null) {
+            Employee head = employeeRepository.findById(dto.getDepartmentHeadId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department head not found with id " + dto.getDepartmentHeadId()));
+            existing.setDepartmentHead(head);
+        } else {
+            existing.setDepartmentHead(null);
+        }
+
+        Department saved = departmentRepository.save(existing);
+        return toDTO(saved);
     }
     //delete department
     public void delete(Long id) {

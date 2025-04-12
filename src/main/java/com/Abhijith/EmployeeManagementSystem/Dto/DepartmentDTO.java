@@ -5,13 +5,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class DepartmentDTO {
+
     private Long id;
     private String name;
     private LocalDate creationDate;
     private Long departmentHeadId;
+    //To remove employeesList on Department List Get Method
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<EmployeeDTO> employees;
     private Integer employeeCount;
+
     public Integer getEmployeeCount() {
         return employeeCount;
     }

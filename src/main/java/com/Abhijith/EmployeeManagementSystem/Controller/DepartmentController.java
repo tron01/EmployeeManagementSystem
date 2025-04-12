@@ -1,7 +1,6 @@
 package com.Abhijith.EmployeeManagementSystem.Controller;
 
 import com.Abhijith.EmployeeManagementSystem.Dto.DepartmentDTO;
-import com.Abhijith.EmployeeManagementSystem.Model.Department;
 import com.Abhijith.EmployeeManagementSystem.Service.DepartmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,27 +22,23 @@ public class DepartmentController {
 
     // POST /department
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Department department) {
+    public ResponseEntity<?> create(@RequestBody DepartmentDTO dto) {
         try {
-            DepartmentDTO created = departmentService.create(department);
+            DepartmentDTO created = departmentService.create(dto);
             return new ResponseEntity<>(created, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Unexpected error occurred"));
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
         }
     }
 
     // PUT /department/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Department department) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody DepartmentDTO dto) {
         try {
-            DepartmentDTO updated = departmentService.update(department, id);
+            DepartmentDTO updated = departmentService.update(dto, id);
             return ResponseEntity.ok(updated);
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Unexpected error occurred"));
         }
     }
 
@@ -83,7 +78,6 @@ public class DepartmentController {
         public ResponseEntity<?> deleteDepartment(@PathVariable Long id) {
         try {
             departmentService.delete(id);
-            //return ResponseEntity.noContent().build();  // to sent 204 code
             return ResponseEntity.ok(Map.of("message", "Department deleted successfully."));
         }catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(Map.of("error", e.getReason()));
