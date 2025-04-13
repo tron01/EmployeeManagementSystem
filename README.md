@@ -119,3 +119,70 @@
   "reportingManagerId": 4
 }
 ```
+### 1. Update Employee by ID
+**Request**
+
+    PUT /employee/{id}
+**Request Body**
+```json
+{
+  "name": "Ashil B",
+  "salary": 75000.0,
+  "address": "123 Main Street, Kochi",
+  "role": "employee",
+  "joinDate": "2021-04-15",
+  "dateOfBirth": "1992-06-10",
+  "yearlyBonusPercentage": 10.5
+}
+```
+**Response**
+```json
+{
+  "id": 29,
+  "name": "Ashil B",
+  "salary": 75000.0,
+  "address": "123 Main Street, Kochi",
+  "role": "employee",
+  "joinDate": "2021-04-15",
+  "dateOfBirth": "1992-06-10",
+  "yearlyBonusPercentage": 10.5,
+  "departmentId": 3,
+  "reportingManagerId": 4
+}
+```
+### 1.  Update Employee Department
+**Request**
+
+    PUT /employee/{id}/department
+**Request Body**
+```json
+{
+  "departmentId": 4
+}
+```
+**Response**
+```json
+{
+  "id": 29,
+  "name": "Ashil B",
+  "salary": 75000.0,
+  "address": "123 Main Street, Kochi",
+  "role": "employee",
+  "joinDate": "2021-04-15",
+  "dateOfBirth": "1992-06-10",
+  "yearlyBonusPercentage": 10.5,
+  "departmentId": 3,
+  "reportingManagerId": 4
+}
+```
+### 1.  Delete Employee by ID
+**Request**
+
+    DELETE /employee/{id}
+**Response**
+```json
+{
+  "message": "Employee deleted successfully"
+}
+
+```
