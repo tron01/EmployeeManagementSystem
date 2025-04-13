@@ -1,5 +1,6 @@
 package com.Abhijith.EmployeeManagementSystem.Repository;
 
+import com.Abhijith.EmployeeManagementSystem.Dto.DepartmentEmployeeCountDTO;
 import com.Abhijith.EmployeeManagementSystem.Dto.RoleCountDTO;
 import com.Abhijith.EmployeeManagementSystem.Model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,8 +10,11 @@ import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-    //give Employee Role and count
+    //Employee Role and count
     @Query("select new com.Abhijith.EmployeeManagementSystem.Dto.RoleCountDTO(e.role,COUNT(e))from Employee e group by e.role")
     List<RoleCountDTO> getEmployeeCountByRole();
+    //department Name and employee Count
+    @Query("select new com.Abhijith.EmployeeManagementSystem.Dto.DepartmentEmployeeCountDTO(d.name,count(e)) from Department d left join d.employees e group by d.name")
+    List<DepartmentEmployeeCountDTO> getEmployeeCountByDepartment();
 
 }
