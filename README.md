@@ -8,6 +8,8 @@
 **Request**
 
     GET /employee
+
+    GET /employee?page=0
 **Response**
 ```json
 {
@@ -41,11 +43,13 @@
   "currentPage": 0
 }
 ```
-### 1.  Get All Employees (Lookup Only) (Paginated)
+### 2.  Get All Employees (Lookup Only) (Paginated)
 
 **Request**
     
     GET /employee?lookup=true
+
+    GET /employee?lookup=true&page=0
 **Response**
 ```json
 {
@@ -63,10 +67,10 @@
   "currentPage": 0
 }
 ```
-### 1. Get Employee By ID
+### 3. Get Employee By ID
 **Request**
 
-    GET /employee/{id}
+    GET /employee/1
 **Response**
 ```json
 {
@@ -82,7 +86,7 @@
     "reportingManagerId": null
 }
 ```
-### 1. Create New Employee
+### 4. Create New Employee
 **Request**
 
     POST /employee
@@ -115,10 +119,10 @@
   "reportingManagerId": 4
 }
 ```
-### 1. Update Employee by ID
+### 5. Update Employee by ID
 **Request**
 
-    PUT /employee/{id}
+    PUT /employee/29
 **Request Body**
 ```json
 {
@@ -146,7 +150,7 @@
   "reportingManagerId": 4
 }
 ```
-### 1.  Update Employee Department
+### 6.  Update Employee Department
 **Request**
 
     PUT /employee/{id}/department
@@ -171,23 +175,24 @@
   "reportingManagerId": 4
 }
 ```
-### 1.  Delete Employee by ID
+### 7.  Delete Employee by ID
 **Request**
 
-    DELETE /employee/{id}
+    DELETE /employee/29
 **Response**
 ```json
 {
   "message": "Employee deleted successfully"
 }
-
 ```
 # Department API Documentation 
 
-### 1.  Get All Department (Paginated)
+### 8.  Get All Department (Paginated)
 **Request**
 
     GET /department/
+
+    GET /department?page=0
 **Response**
 ```json
 {
@@ -225,10 +230,24 @@
   "currentPage": 0
 }
 ```
-### 1.  Get Department By Id And Employee List of that Department
+### 9.  Get Department By Id
 **Request**
 
-    GET /department/1/expand=employee
+    GET /department/1
+**Response**
+```json
+{
+  "id": 1,
+  "name": "IT",
+  "creationDate": "2024-06-01",
+  "departmentHeadId": 2,
+  "employeeCount": 7
+}
+```
+### 10.  Get Department By Id And Employee List of that Department
+**Request**
+
+    GET /department/1?expand=employee
 **Response**
 ```json
 {
@@ -289,22 +308,7 @@
   "employeeCount": 4
 }
 ```
-### 1.  Get Department By Id
-**Request**
-
-    GET /department/{id}
-**Response**
-```json
-{
-  "id": 1,
-  "name": "IT",
-  "creationDate": "2024-06-01",
-  "departmentHeadId": 2,
-  "employeeCount": 7
-}
-```
-
-### 1.  Create New Department
+### 11.  Create New Department
 **Request**
 
     POST localhost:8080/department
@@ -326,10 +330,10 @@
   "employeeCount": 0
 }
 ```
-### 1.  Update Department By Id
+### 12.  Update Department By Id
 **Request**
 
-    PUT localhost:8080/department/{id}
+    PUT localhost:8080/department/5
 **Request Body**
 ```json
 {
@@ -348,10 +352,10 @@
   "employeeCount": 0
 }
 ```
-### 1.  Delete Department By Id
+### 13.  Delete Department By Id
 **Request**
 
-    DELETE /department/{id}
+    DELETE /department/5
 **Response**
 ```json
 {

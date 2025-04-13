@@ -122,7 +122,7 @@ public class EmployeeService {
         return employeesPage.map(employee -> this.toDTO(employee));  // map each Employee to DTO
     }
 
-    // Employee DTO mapper
+    // Employee DTO mapping for Response of (create,getById,update,changeDepartment,getAllEmployeesPaginated)
     public EmployeeDTO toDTO(Employee employee) {
         if (employee == null) return null;
         EmployeeDTO dto = new EmployeeDTO();

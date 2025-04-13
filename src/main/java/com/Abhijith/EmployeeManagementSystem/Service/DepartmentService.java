@@ -113,7 +113,7 @@ public class DepartmentService {
         departmentRepository.deleteById(id);
     }
 
-    //DepartmentDTO mapping (create,update,departmentList)
+    //DepartmentDTO mapping  for Response of(create,update,departmentList)
     private DepartmentDTO toDTO(Department dept) {
         DepartmentDTO dto = new DepartmentDTO();
         dto.setId(dept.getId());
@@ -125,7 +125,7 @@ public class DepartmentService {
         return dto;
     }
 
-    //EmployeeDTO mapping for (getDepartmentWithEmployee)
+    //EmployeeDTO mapping for Response of (getDepartmentWithEmployee)
     private EmployeeDTO convertToDTO(Employee employee) {
         EmployeeDTO dto = new EmployeeDTO();
         dto.setId(employee.getId());
