@@ -2,6 +2,7 @@ package com.Abhijith.EmployeeManagementSystem.Service;
 
 import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeDTO;
 import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeLookupDTO;
+import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeReportingChainDTO;
 import com.Abhijith.EmployeeManagementSystem.Dto.RoleReportingChainDTO;
 import com.Abhijith.EmployeeManagementSystem.Model.Department;
 import com.Abhijith.EmployeeManagementSystem.Model.Employee;
@@ -12,8 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
+import java.util.ArrayList;
 import java.util.List;
+
 
 
 @Service
@@ -128,6 +130,19 @@ public class EmployeeService {
     public List<RoleReportingChainDTO> getRoleReportingChains() {
         return employeeRepository.findReportingChainsByRole();
     }
+    //get report chains of a Id
+    public EmployeeReportingChainDTO getReportingChainByEmployeeId(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+        List<String> chain = new ArrayList<>();
+        Employee manager = employee.getReportingManager();
+        while (manager != null) {
+            chain.add(manager.getName());
+            manager = manager.getReportingManager(); // recursive
+        }
+        return new EmployeeReportingChainDTO(employee.getId(), employee.getName(), chain);
+    }
+
 
     // Employee DTO mapping for Response of (create,getById,update,changeDepartment,getAllEmployeesPaginated)
     public EmployeeDTO toDTO(Employee employee) {
