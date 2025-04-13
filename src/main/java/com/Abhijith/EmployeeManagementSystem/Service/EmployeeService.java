@@ -94,6 +94,7 @@ public class EmployeeService {
                orElseThrow(() -> new  ResponseStatusException(HttpStatus.NOT_FOUND, "Department  not found with id " + departmentId));
        //  field updates (departmentId)
        employee.setDepartment(department);
+       employee.setReportingManager(department.getDepartmentHead());
        Employee updatedEmployee = employeeRepository.save(employee);
         return toDTO(updatedEmployee);
     }
