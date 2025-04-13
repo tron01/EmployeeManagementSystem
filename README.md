@@ -1,9 +1,13 @@
 # Employee Management System 
-## Employee API Documentation
+
 
 ### Base URL
         http://localhost:8080
+
+## Employee API Endpoints
+
 ---
+
 ### 1. Get All Employees (Paginated)
 **Request**
 
@@ -185,8 +189,11 @@
   "message": "Employee deleted successfully"
 }
 ```
-# Department API Documentation 
+----
 
+## Department API Endpoints
+
+----
 ### 8.  Get All Department (Paginated)
 **Request**
 
@@ -362,7 +369,114 @@
   "message": "Department deleted successfully."
 }
 ```
+----
 
+## Dashboard API Endpoints
+
+----
+
+``
+### 14.  Get Counts
+**Request**
+
+    GET /dashboard/count
+**Response**
+```json
+{
+  "totalEmployees": 28,
+  "totalDepartments": 5
+}
+```
+### 15.  Get Role Employee Count
+**Request**
+
+    GET dashboard/role_chart
+**Response**
+```json
+[
+  {
+    "role": "Admin",
+    "count": 1
+  },
+  {
+    "role": "Manager",
+    "count": 4
+  },
+  {
+    "role": "Employee",
+    "count": 23
+  }
+]
+```
+
+### 16.  Get Department Employee Count
+**Request**
+
+    GET /dashboard/department_chart
+**Response**
+```json
+[
+  {
+    "departmentName": "IT",
+    "employeeCount": 7
+  },
+  {
+    "departmentName": "HR",
+    "employeeCount": 6
+  },
+  {
+    "departmentName": "Finance",
+    "employeeCount": 7
+  },
+  {
+    "departmentName": "Marketing",
+    "employeeCount": 7
+  },
+  {
+    "departmentName": "UI/UX",
+    "employeeCount": 0
+  }
+]
+```
+----
+
+## Reporting-chains API Endpoints
+
+----
+
+### 17.  Get By role
+**Request**
+
+    GET /reporting-chains/by_role
+**Response**
+```json
+[
+  {
+    "role": "Manager",
+    "reportsTo": "Admin"
+  },
+  {
+    "role": "Employee",
+    "reportsTo": "Manager"
+  }
+]
+```
+
+### 18.  Get By Id
+**Request**
+
+    GET /reporting-chains/12
+**Response**
+```json
+{
+  "employeeId": 12,
+  "employeeName": "Ravi N",
+  "reportingChain": [
+    "Manager HR",
+    "AdminManager"
+  ]
+}
+```
 
 
 
