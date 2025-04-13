@@ -1,9 +1,12 @@
 package com.Abhijith.EmployeeManagementSystem.Service;
 
 import com.Abhijith.EmployeeManagementSystem.Dto.DashboardDTO;
+import com.Abhijith.EmployeeManagementSystem.Dto.RoleCountDTO;
 import com.Abhijith.EmployeeManagementSystem.Repository.DepartmentRepository;
 import com.Abhijith.EmployeeManagementSystem.Repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DashboardService {
@@ -21,6 +24,9 @@ public class DashboardService {
       long DepartmentCount = departmentRepository.count();
 
       return new DashboardDTO(EmployeeCount,DepartmentCount);
+    }
+    public List<RoleCountDTO> getRoleCounts() {
+        return employeeRepository.getEmployeeCountByRole();
     }
 
 }

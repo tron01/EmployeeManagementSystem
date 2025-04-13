@@ -92,7 +92,7 @@ public class EmployeeService {
                orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found with id " + employeeID));
        Department department = departmentRepository.findById(departmentId).
                orElseThrow(() -> new  ResponseStatusException(HttpStatus.NOT_FOUND, "Department  not found with id " + departmentId));
-       //  field updates (departmentId)
+       //  field updates (departmentId,ReportingManager)
        employee.setDepartment(department);
        employee.setReportingManager(department.getDepartmentHead());
        Employee updatedEmployee = employeeRepository.save(employee);
