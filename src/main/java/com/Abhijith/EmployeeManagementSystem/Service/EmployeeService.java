@@ -2,6 +2,7 @@ package com.Abhijith.EmployeeManagementSystem.Service;
 
 import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeDTO;
 import com.Abhijith.EmployeeManagementSystem.Dto.EmployeeLookupDTO;
+import com.Abhijith.EmployeeManagementSystem.Dto.RoleReportingChainDTO;
 import com.Abhijith.EmployeeManagementSystem.Model.Department;
 import com.Abhijith.EmployeeManagementSystem.Model.Employee;
 import com.Abhijith.EmployeeManagementSystem.Repository.DepartmentRepository;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 
 @Service
@@ -120,6 +123,10 @@ public class EmployeeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Page not found");
         }
         return employeesPage.map(employee -> this.toDTO(employee));  // map each Employee to DTO
+    }
+    //get report chains of roles
+    public List<RoleReportingChainDTO> getRoleReportingChains() {
+        return employeeRepository.findReportingChainsByRole();
     }
 
     // Employee DTO mapping for Response of (create,getById,update,changeDepartment,getAllEmployeesPaginated)
