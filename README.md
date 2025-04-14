@@ -157,7 +157,7 @@
 ### 6.  Update Employee Department
 **Request**
 
-    PUT /employee/{id}/department
+    PATCH /employee/{id}/department
 **Request Body**
 ```json
 {

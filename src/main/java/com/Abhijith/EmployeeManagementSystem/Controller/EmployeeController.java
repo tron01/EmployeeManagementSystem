@@ -116,9 +116,9 @@ public class EmployeeController {
         }
     }
 
-    //PUT /employee/{id}/department
-    @PutMapping("/{id}/department")
-    public ResponseEntity<?> changeDepartment(@PathVariable("id") Long employeeId,@RequestBody ChangeDepartmentDTO request) {
+    //PATCH /employee/{id}/department
+    @PatchMapping("/{id}/department")
+    public ResponseEntity<?> changeDepartment(@PathVariable("id") Long employeeId, @RequestBody ChangeDepartmentDTO request) {
         try {
             EmployeeDTO updated = employeeService.changeDepartment(employeeId, request.getDepartmentId());
             return ResponseEntity.ok(updated);
@@ -132,5 +132,6 @@ public class EmployeeController {
                     .body(Map.of("error", "Unexpected error occurred"));
         }
     }
+
 
 }
